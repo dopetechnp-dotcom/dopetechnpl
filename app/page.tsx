@@ -10,6 +10,8 @@ import { EnhancedFooter } from "@/components/enhanced-footer"
 import { useHeroCarousel } from "@/hooks/use-hero-carousel"
 import { PageTransition, useFluidNavigation, useScrollAnimation, useSmoothScroll } from "@/components/page-transition"
 import { DraggableMarquee } from "@/components/draggable-marquee"
+import { LoadingSkeleton, LoadingSpinner, LoadingOverlay } from "@/components/loading-skeleton"
+import { PerformanceOptimizer, useLoadingState } from "@/components/performance-optimizer"
 import {
   Headphones,
   Keyboard,
@@ -72,6 +74,9 @@ export default function DopeTechEcommerce() {
   
   // Hero carousel hook
   const { slides: heroSlides, loading: heroLoading } = useHeroCarousel()
+  
+  // Performance optimization hooks
+  const { isLoading: isDataLoading, withLoading } = useLoadingState()
   
 
   
@@ -148,75 +153,57 @@ export default function DopeTechEcommerce() {
     setIsClientLoading(true)
   }, [])
 
-  // Product fetching with timeout to prevent infinite loading
+  // Product fetching with optimized loading states
   useEffect(() => {
     let isMounted = true
-    let fallbackTimeout: NodeJS.Timeout | null = null
 
     const fetchProducts = async () => {
       try {
-        // Set loading to true when fetch starts
-        if (isMounted) {
-          setIsLoading(true)
-        }
-        
-        // Fetching products from Supabase
-        
-        // Add timeout to prevent infinite loading
-        const timeoutPromise = new Promise((_, reject) => {
-          setTimeout(() => reject(new Error('Request timeout')), 10000) // 10 second timeout
-        })
-        
-        const productsPromise = getProducts()
-        const supabaseProducts = await Promise.race([productsPromise, timeoutPromise]) as Product[]
-        
-        if (isMounted) {
-          // Products fetched successfully
+        await withLoading(async () => {
+          // Add timeout to prevent infinite loading
+          const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('Request timeout')), 8000) // 8 second timeout
+          })
           
-          if (supabaseProducts && supabaseProducts.length > 0) {
-            setProducts(supabaseProducts)
-            setCurrentProducts(supabaseProducts)
-          } else {
-            setProducts([])
-            setCurrentProducts([])
+          const productsPromise = getProducts()
+          const supabaseProducts = await Promise.race([productsPromise, timeoutPromise]) as Product[]
+          
+          if (isMounted) {
+            if (supabaseProducts && supabaseProducts.length > 0) {
+              setProducts(supabaseProducts)
+              setCurrentProducts(supabaseProducts)
+            } else {
+              setProducts([])
+              setCurrentProducts([])
+            }
+            setIsClientLoading(false)
           }
-          
-          setIsLoading(false)
-          setIsClientLoading(false)
-        }
+        }, 'Loading products...')
       } catch (error) {
         console.error('❌ Error fetching products:', error)
         if (isMounted) {
           setProducts([])
           setCurrentProducts([])
-          setIsLoading(false)
           setIsClientLoading(false)
         }
       }
     }
 
-    // Set loading to true initially and add a fallback timeout to ensure loading state is always cleared
-    if (isMounted) {
-      setIsLoading(true)
-    }
-    
-    fallbackTimeout = setTimeout(() => {
+    // Add a fallback timeout to ensure loading state is always cleared
+    const fallbackTimeout = setTimeout(() => {
       console.warn('⚠️ Fallback timeout reached - clearing loading state')
       if (isMounted) {
-        setIsLoading(false)
         setIsClientLoading(false)
       }
-    }, 15000) // 15 second fallback
+    }, 12000) // 12 second fallback
 
     fetchProducts()
 
     return () => {
       isMounted = false
-      if (fallbackTimeout) {
-        clearTimeout(fallbackTimeout)
-      }
+      clearTimeout(fallbackTimeout)
     }
-  }, [])
+  }, [withLoading])
 
   // Fetch dope picks (random selection of max 6 products)
   useEffect(() => {
@@ -1165,7 +1152,19 @@ export default function DopeTechEcommerce() {
                 ? "grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5" 
                 : "grid-cols-1"
             }`}>
-            {filteredProducts.map((product, index) => (
+            {(isLoading || isDataLoading) ? (
+              // Loading skeletons
+              Array.from({ length: 12 }).map((_, index) => (
+                <div 
+                  key={`skeleton-${index}`} 
+                  className="animate-fade-in-up"
+                  style={{ animationDelay: `${index * 0.05}s` }}
+                >
+                  <LoadingSkeleton type="product-card" />
+                </div>
+              ))
+            ) : (
+              filteredProducts.map((product, index) => (
               <div key={product.id} data-product-id={product.id} className="group animate-fade-in-up hover-lift product-card-fluid scroll-animate" style={{ animationDelay: `${index * 0.1}s` }}>
                 <div 
                   className="relative overflow-hidden rounded-2xl card-elevated cursor-pointer"
@@ -1244,7 +1243,8 @@ export default function DopeTechEcommerce() {
                   </div>
                 </div>
               </div>
-            ))}
+            ))
+            )}
           </div>
         </div>
       </section>

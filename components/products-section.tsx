@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import { Headphones, Keyboard, Mouse, Speaker, Search, Filter } from 'lucide-react'
 import OptimizedProductCard from './optimized-product-card'
+import { LoadingSkeleton } from './loading-skeleton'
 
 interface Product {
   id: number
@@ -22,6 +23,7 @@ interface Product {
 interface ProductsSectionProps {
   products: Product[]
   onAddToCart: (product: Product) => void
+  isLoading?: boolean
 }
 
 const categories = [
@@ -32,7 +34,7 @@ const categories = [
   { id: 'speaker', name: 'Speakers', icon: Speaker },
 ]
 
-export default function ProductsSection({ products, onAddToCart }: ProductsSectionProps) {
+export default function ProductsSection({ products, onAddToCart, isLoading = false }: ProductsSectionProps) {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
   const [isSearchFocused, setIsSearchFocused] = useState(false)
@@ -152,18 +154,31 @@ export default function ProductsSection({ products, onAddToCart }: ProductsSecti
 
         {/* Products Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
-          {filteredProducts.map((product, index) => (
-            <div 
-              key={product.id}
-              className="animate-fade-in-up"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <OptimizedProductCard
-                product={product}
-                onAddToCart={onAddToCart}
-              />
-            </div>
-          ))}
+          {isLoading ? (
+            // Loading skeletons
+            Array.from({ length: 12 }).map((_, index) => (
+              <div 
+                key={`skeleton-${index}`}
+                className="animate-fade-in-up"
+                style={{ animationDelay: `${index * 0.05}s` }}
+              >
+                <LoadingSkeleton type="product-card" />
+              </div>
+            ))
+          ) : (
+            filteredProducts.map((product, index) => (
+              <div 
+                key={product.id}
+                className="animate-fade-in-up"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <OptimizedProductCard
+                  product={product}
+                  onAddToCart={onAddToCart}
+                />
+              </div>
+            ))
+          )}
         </div>
 
         {/* Empty State */}
