@@ -19,6 +19,7 @@ import {
   CreditCard
 } from 'lucide-react'
 import { useLogoUrl } from '@/hooks/use-assets'
+import Image from 'next/image'
 
 export function EnhancedFooter() {
   const { logoUrl } = useLogoUrl()
@@ -112,15 +113,14 @@ export function EnhancedFooter() {
             >
               {/* Logo */}
               <div className="flex items-center space-x-2">
-                {logoUrl ? (
-                  <img 
-                    src={logoUrl} 
-                    alt="DopeTech Nepal" 
-                    className="h-6 w-auto sm:h-8 sm:w-auto"
-                  />
-                ) : (
-                  <div className="h-6 w-24 sm:h-8 sm:w-32 bg-primary rounded-lg animate-pulse" />
-                )}
+                <Image 
+                  src={logoUrl || "/logo/simple-logo.svg"} 
+                  alt="DopeTech" 
+                  width={48}
+                  height={48}
+                  className="w-12 h-12 logo-adaptive flex-shrink-0 origin-left scale-[1.3]" 
+                  priority={true}
+                />
                 <span className="text-lg sm:text-xl font-bold">DopeTech</span>
               </div>
               

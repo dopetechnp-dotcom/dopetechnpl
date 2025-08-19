@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Upload, Trash2, Edit, Save, X, FileImage, Eye, EyeOff, RefreshCw, Loader2 } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import Image from 'next/image'
 
 export function HeroImageManager() {
   const { 
@@ -238,19 +239,21 @@ export function HeroImageManager() {
                   .sort((a, b) => a.display_order - b.display_order)
                   .map((image, index) => (
                     <div key={image.id} className="relative group">
-                      <div className="aspect-video bg-black/50 rounded-lg sm:rounded-xl overflow-hidden border border-white/20 hover:border-white/40 transition-all duration-300">
-                        <img
+                      <div className="aspect-video overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-700">
+                        <Image
                           src={image.image_url}
-                          alt={image.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          alt={image.title || 'Hero image'}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                        <div className="absolute bottom-0 left-0 right-0 p-3 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                          <h4 className="text-white font-semibold text-sm sm:text-base">{image.title}</h4>
-                          {image.subtitle && (
-                            <p className="text-gray-300 text-xs sm:text-sm">{image.subtitle}</p>
-                          )}
-                        </div>
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute bottom-0 left-0 right-0 p-3 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                        <h4 className="text-white font-semibold text-sm sm:text-base">{image.title}</h4>
+                        {image.subtitle && (
+                          <p className="text-gray-300 text-xs sm:text-sm">{image.subtitle}</p>
+                        )}
                       </div>
                       <div className="absolute top-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded font-bold">
                         {index + 1}
@@ -407,10 +410,12 @@ export function HeroImageManager() {
                   <div className="flex flex-col sm:flex-row">
                     {/* Image Preview */}
                     <div className="w-full sm:w-48 h-32 sm:h-32 relative bg-black/50">
-                      <img
+                      <Image
                         src={image.image_url}
-                        alt={image.title}
-                        className="w-full h-full object-cover"
+                        alt={image.title || 'Hero image'}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       />
                       <div className="absolute top-2 right-2">
                         <div className="relative group">

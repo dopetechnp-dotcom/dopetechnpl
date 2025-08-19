@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { optimizeSupabaseImageUrl } from './utils';
 
 // Product Image type definition
 export interface ProductImage {
@@ -505,35 +506,41 @@ export async function getProductsWithImages(): Promise<Product[]> {
 
 // Utility function to get the primary image URL from a product
 export function getPrimaryImageUrl(product: Product): string {
+  let imageUrl = '';
+  
   // If product has images array and it's not empty, use the primary image
   if (product.images && product.images.length > 0) {
     const primaryImage = product.images.find(img => img.is_primary)
     if (primaryImage && primaryImage.image_url) {
-      return primaryImage.image_url
+      imageUrl = primaryImage.image_url;
+    } else if (product.images[0].image_url) {
+      // If no primary image is set, use the first image
+      imageUrl = product.images[0].image_url;
     }
-    // If no primary image is set, use the first image
-    if (product.images[0].image_url) {
-      return product.images[0].image_url
-    }
+  } else if (product.image_url) {
+    // Fallback to the original image_url field
+    imageUrl = product.image_url;
   }
   
-  // Fallback to the original image_url field
-  if (product.image_url) {
-    return product.image_url
-  }
-  
-  // Final fallback to a placeholder image
-  return '/placeholder-product.svg'
+  // Optimize the URL and provide fallback
+  return optimizeSupabaseImageUrl(imageUrl) || '/placeholder-product.svg';
 }
 
 // Utility function to get all images for a product
 export function getProductImageUrls(product: Product): string[] {
+  let imageUrls: string[] = [];
+  
   if (product.images && product.images.length > 0) {
-    return product.images.map(img => img.image_url)
+    imageUrls = product.images.map(img => img.image_url);
+  } else if (product.image_url) {
+    // Fallback to the original image_url field
+    imageUrls = [product.image_url];
   }
   
-  // Fallback to the original image_url field
-  return product.image_url ? [product.image_url] : []
+  // Optimize all URLs and filter out empty ones
+  return imageUrls
+    .map(url => optimizeSupabaseImageUrl(url))
+    .filter(url => url && url !== '/placeholder-product.svg');
 }
 
 // CRUD functions for products

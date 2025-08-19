@@ -49,6 +49,7 @@ import { AssetUploader } from '@/components/asset-uploader'
 import { HeroImageManager } from '@/components/hero-image-manager'
 import { QRCodeManager } from '@/components/qr-code-manager'
 import { supabase } from "@/lib/supabase"
+import Image from "next/image"
 
 interface AdminProduct extends Product {
   isNew?: boolean
@@ -500,13 +501,19 @@ export function EnhancedAdminPanel() {
                         >
                           <div className="aspect-square bg-gray-100 dark:bg-gray-700 rounded-lg mb-4 flex items-center justify-center">
                             {product.image_url ? (
-                              <img
-                                src={product.image_url}
-                                alt={product.name}
-                                className="w-full h-full object-cover rounded-lg"
-                              />
+                              <div className="relative w-16 h-16 rounded-lg overflow-hidden">
+                                <Image
+                                  src={product.image_url}
+                                  alt={product.name}
+                                  fill
+                                  className="object-cover"
+                                  sizes="64px"
+                                />
+                              </div>
                             ) : (
-                              <ImageIcon className="w-12 h-12 text-gray-400" />
+                              <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                                <span className="text-gray-500 text-xs">No Image</span>
+                              </div>
                             )}
                           </div>
                           

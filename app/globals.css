@@ -2770,18 +2770,50 @@ html {
   box-shadow: 0 8px 25px rgba(247, 221, 15, 0.3);
 }
 
-/* Smooth Scroll Indicators */
+/* Smooth Scroll Indicators - Mobile Optimized */
 .scroll-indicator {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
+  width: var(--scroll-progress, 0%);
   height: 3px;
   background: linear-gradient(90deg, #F7DD0F, #FFD700);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.3s ease;
   z-index: 9999;
+  will-change: width;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  /* Ensure smooth transitions */
+  transition: width 0.1s ease-out;
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 768px) {
+  .scroll-indicator {
+    height: 2px;
+    background: linear-gradient(90deg, #F7DD0F, #FFD700);
+    /* Additional mobile optimizations */
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+    -webkit-backface-visibility: hidden;
+    -webkit-perspective: 1000;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .scroll-indicator {
+    height: 2px;
+    /* Reduce visual impact on touch devices */
+    opacity: 0.8;
+  }
+}
+
+/* Disable scroll indicator on devices with reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-indicator {
+    display: none;
+  }
 }
 
 /* Loading Transitions */

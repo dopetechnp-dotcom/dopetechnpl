@@ -5,6 +5,7 @@ import { MessageCircle, Send, X, Bot, User, Loader2, Sparkles } from "lucide-rea
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
+import Image from "next/image"
 
 interface Message {
   id: string
@@ -365,11 +366,15 @@ export default function AIChatAssistant({ products, onAddToCart }: AIChatAssista
                     {message.type === "product" && message.product && (
                       <Card className="mt-2 sm:mt-3 md:mt-4 p-2 sm:p-3 md:p-4 bg-black/20 backdrop-blur-md border border-white/20">
                         <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-4">
-                          <img
-                            src={message.product.image}
-                            alt={message.product.name}
-                            className="w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 object-cover rounded-lg flex-shrink-0"
-                          />
+                          <div className="relative w-8 h-8 rounded-full overflow-hidden">
+                            <Image
+                              src={message.product.image}
+                              alt={message.product.name}
+                              fill
+                              className="object-cover"
+                              sizes="32px"
+                            />
+                          </div>
                           <div className="flex-1 min-w-0">
                             <h4 className="font-medium text-xs sm:text-sm md:text-base lg:text-lg truncate text-white">{message.product.name}</h4>
                             <p className="text-[#F7DD0F] font-bold text-xs sm:text-sm md:text-base lg:text-lg">Rs {message.product.price.toLocaleString()}</p>

@@ -30,6 +30,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import Image from "next/image"
 
 export function OrdersManager() {
   const [orders, setOrders] = useState<Order[]>([])
@@ -781,15 +782,15 @@ export function OrdersManager() {
                           key={item.id}
                           className="flex items-start gap-4 sm:gap-6 p-4 sm:p-6 bg-white/5 rounded-lg border border-white/10"
                         >
-                          <img
-                            src={item.product_image || '/placeholder-product.svg'}
-                            alt={item.product_name}
-                            className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover flex-shrink-0"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement
-                              target.src = '/placeholder-product.svg'
-                            }}
-                          />
+                          <div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                            <Image
+                              src={item.product_image || '/placeholder-product.svg'}
+                              alt={item.product_name}
+                              fill
+                              className="object-cover"
+                              sizes="64px"
+                            />
+                          </div>
                           <div className="flex-1 min-w-0">
                             <h4 className="text-base sm:text-lg text-white font-medium modal-text-safe leading-tight">{item.product_name}</h4>
                             <p className="text-sm sm:text-base text-gray-400 mt-2">Quantity: {item.quantity}</p>
@@ -871,13 +872,15 @@ export function OrdersManager() {
                       {/* Receipt Image Display */}
                       <div className="flex justify-center">
                         {selectedOrder.receipt_url ? (
-                          <img
-                            src={selectedOrder.receipt_url}
+                          <Image
+                            src={selectedOrder.receipt_url!}
                             alt="Payment Receipt"
+                            width={600}
+                            height={400}
                             className="max-w-full max-h-64 sm:max-h-96 rounded-lg border border-white/20"
-                            onLoad={() => console.log('✅ Receipt image loaded successfully:', selectedOrder.receipt_url)}
-                            onError={(e) => {
-                              console.error('❌ Receipt image failed to load:', selectedOrder.receipt_url)
+                            onLoad={() => console.log('✅ Receipt image loaded successfully:', selectedOrder.receipt_url!)}
+                                                          onError={(e) => {
+                                console.error('❌ Receipt image failed to load:', selectedOrder.receipt_url!)
                               const target = e.target as HTMLImageElement
                               target.style.display = 'none'
                               // Show fallback message

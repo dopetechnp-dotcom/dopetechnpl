@@ -22,6 +22,7 @@ import {
 } from 'lucide-react'
 import { useCart } from '@/contexts/cart-context'
 import { useLogoUrl } from '@/hooks/use-assets'
+import Image from 'next/image'
 
 interface HeaderProps {
   onSearchToggle?: () => void
@@ -108,15 +109,14 @@ export function EnhancedHeader({ onSearchToggle, onCategorySelect, className = '
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              {logoUrl ? (
-                <img 
-                  src={logoUrl} 
-                  alt="DopeTech Nepal" 
-                  className="h-6 w-auto sm:h-7 md:h-8 lg:h-10"
-                />
-              ) : (
-                <div className="h-6 w-24 sm:h-7 sm:w-28 md:h-8 md:w-32 lg:h-10 lg:w-40 bg-primary rounded-lg animate-pulse" />
-              )}
+              <Image 
+                src={logoUrl} 
+                alt="DopeTech" 
+                width={48}
+                height={48}
+                className="w-12 h-12 logo-adaptive flex-shrink-0 origin-left scale-[1.3]" 
+                priority={true}
+              />
               <span className="hidden sm:block text-sm sm:text-base md:text-lg lg:text-xl font-bold text-gray-900 dark:text-white">
                 DopeTech
               </span>

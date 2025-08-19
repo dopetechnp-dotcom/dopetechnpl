@@ -119,16 +119,18 @@ export function useLogoUrl() {
       try {
         console.log('🔄 Loading logo...')
         
-        // Check cache first
-        const cachedLogo = sessionStorage.getItem('cachedLogoUrl')
-        const cacheTime = sessionStorage.getItem('logoCacheTime')
-        const cacheAge = cacheTime ? Date.now() - parseInt(cacheTime) : Infinity
-        
-        // Use cache if it's less than 10 minutes old
-        if (cachedLogo && cacheAge < 10 * 60 * 1000) {
-          console.log('✅ Using cached logo:', cachedLogo)
-          setLogoUrl(cachedLogo)
-          return
+        // Check cache first - only on client side
+        if (typeof window !== 'undefined') {
+          const cachedLogo = sessionStorage.getItem('cachedLogoUrl')
+          const cacheTime = sessionStorage.getItem('logoCacheTime')
+          const cacheAge = cacheTime ? Date.now() - parseInt(cacheTime) : Infinity
+          
+          // Use cache if it's less than 10 minutes old
+          if (cachedLogo && cacheAge < 10 * 60 * 1000) {
+            console.log('✅ Using cached logo:', cachedLogo)
+            setLogoUrl(cachedLogo)
+            return
+          }
         }
         
         setLoading(true)
@@ -137,10 +139,12 @@ export function useLogoUrl() {
         console.log('✅ Logo URL received:', url)
         setLogoUrl(url)
         
-        // Cache the result
-        sessionStorage.setItem('cachedLogoUrl', url)
-        sessionStorage.setItem('logoCacheTime', Date.now().toString())
-        console.log('💾 Logo cached successfully')
+        // Cache the result - only on client side
+        if (typeof window !== 'undefined') {
+          sessionStorage.setItem('cachedLogoUrl', url)
+          sessionStorage.setItem('logoCacheTime', Date.now().toString())
+          console.log('💾 Logo cached successfully')
+        }
       } catch (err) {
         console.error('❌ Error loading logo:', err)
         // Keep fallback
@@ -165,24 +169,28 @@ export function useVideoUrl() {
   useEffect(() => {
     const loadVideo = async () => {
       try {
-        // Check cache first
-        const cachedVideo = sessionStorage.getItem('cachedVideoUrl')
-        const cacheTime = sessionStorage.getItem('videoCacheTime')
-        const cacheAge = cacheTime ? Date.now() - parseInt(cacheTime) : Infinity
-        
-        // Use cache if it's less than 10 minutes old
-        if (cachedVideo && cacheAge < 10 * 60 * 1000) {
-          setVideoUrl(cachedVideo)
-          return
+        // Check cache first - only on client side
+        if (typeof window !== 'undefined') {
+          const cachedVideo = sessionStorage.getItem('cachedVideoUrl')
+          const cacheTime = sessionStorage.getItem('videoCacheTime')
+          const cacheAge = cacheTime ? Date.now() - parseInt(cacheTime) : Infinity
+          
+          // Use cache if it's less than 10 minutes old
+          if (cachedVideo && cacheAge < 10 * 60 * 1000) {
+            setVideoUrl(cachedVideo)
+            return
+          }
         }
         
         setLoading(true)
         const url = await getVideoUrl()
         setVideoUrl(url)
         
-        // Cache the result
-        sessionStorage.setItem('cachedVideoUrl', url)
-        sessionStorage.setItem('videoCacheTime', Date.now().toString())
+        // Cache the result - only on client side
+        if (typeof window !== 'undefined') {
+          sessionStorage.setItem('cachedVideoUrl', url)
+          sessionStorage.setItem('videoCacheTime', Date.now().toString())
+        }
       } catch (err) {
         console.error('Error loading video:', err)
         // Keep fallback

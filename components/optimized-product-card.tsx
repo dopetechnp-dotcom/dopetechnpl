@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react"
 import { Plus, Heart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
 import { getPrimaryImageUrl } from "@/lib/products-data"
 
 interface Product {
@@ -38,7 +39,6 @@ export default function OptimizedProductCard({
   const [isInView, setIsInView] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
-  const imageRef = useRef<HTMLImageElement>(null)
   const router = useRouter()
 
   // Intersection Observer for lazy loading
@@ -65,7 +65,7 @@ export default function OptimizedProductCard({
 
   // Preload image when in view
   useEffect(() => {
-    if (isInView && imageRef.current) {
+    if (isInView) {
       const img = new Image()
       img.onload = () => setImageLoaded(true)
       img.src = getPrimaryImageUrl(product)
@@ -127,19 +127,17 @@ export default function OptimizedProductCard({
         )}
         
         {isInView && (
-          <img
-            ref={imageRef}
+          <Image
             src={getPrimaryImageUrl(product)}
             alt={product.name}
-            className={`w-full h-full object-cover transition-all duration-500 ${
+            fill
+            className={`object-cover transition-all duration-500 ${
               imageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
             } group-hover:scale-110`}
-            loading="lazy"
-            decoding="async"
             onLoad={() => setImageLoaded(true)}
-            onError={(e) => {
-              e.currentTarget.src = '/placeholder-product.svg';
-            }}
+            onError={() => setImageLoaded(true)}
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+            priority={false}
           />
         )}
 

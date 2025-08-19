@@ -1,9 +1,17 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
-import { X, Truck, Lock, CheckCircle, ChevronDown, Upload, FileText, QrCode } from "lucide-react"
+import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
-import { useQRCodes } from '@/hooks/use-qr-codes'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Check, X, CreditCard, Truck, Shield, RotateCcw, ArrowLeft, Plus, Minus, Download, Printer, Mail, Copy, CheckCircle, AlertCircle, Loader2, Upload, FileText, QrCode, ChevronDown } from "lucide-react"
+import { useCart } from "@/contexts/cart-context"
+import { useQRCodes } from "@/hooks/use-qr-codes"
+import Image from "next/image"
 
 interface CartItem {
   id: number
@@ -143,8 +151,8 @@ export default function SupabaseCheckout({ isOpen, onClose, cart, total, onCartR
         cart,
         total: finalTotal,
         paymentOption,
-        receiptFile: receiptFile ? await fileToBase64(receiptFile) : null,
-        receiptFileName: receiptFileName || null
+        receiptFile: receiptFile ? await fileToBase64(receiptFile) : undefined,
+        receiptFileName: receiptFileName || undefined
       }
 
       console.log('📋 Submitting order to Supabase:', {
@@ -526,28 +534,17 @@ export default function SupabaseCheckout({ isOpen, onClose, cart, total, onCartR
                           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
                         </div>
                       ) : activeQRCode ? (
-                        <img 
+                        <Image 
                           src={activeQRCode.image_url} 
                           alt={activeQRCode.name}
+                          width={224}
+                          height={320}
                           className="w-full h-full object-contain"
-                          onLoad={(e) => {
+                          onLoad={() => {
                             console.log('✅ Payment QR code loaded successfully');
-                            const target = e.target as HTMLImageElement;
-                            target.style.display = 'block';
-                            const fallback = target.parentElement?.querySelector('.qr-fallback');
-                            if (fallback) {
-                              fallback.classList.add('hidden');
-                            }
                           }}
-                          onError={(e) => {
+                          onError={() => {
                             console.error('❌ Payment QR code failed to load');
-                            // Fallback if QR code image fails to load
-                            const target = e.target as HTMLImageElement;
-                            target.style.display = 'none';
-                            const fallback = target.parentElement?.querySelector('.qr-fallback');
-                            if (fallback) {
-                              fallback.classList.remove('hidden');
-                            }
                           }}
                         />
                       ) : (
@@ -630,11 +627,15 @@ export default function SupabaseCheckout({ isOpen, onClose, cart, total, onCartR
                 <div className="space-y-3 mb-6 max-h-64 overflow-y-auto">
                   {cart.map((item) => (
                     <div key={item.id} className="flex items-center space-x-3 p-3 bg-white/5 rounded-lg">
-                      <img
-                        src={item.image_url}
-                        alt={item.name}
-                        className="w-12 h-12 object-cover rounded-lg flex-shrink-0"
-                      />
+                      <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-lg overflow-hidden flex-shrink-0">
+                        <Image
+                          src={item.image_url}
+                          alt={item.name}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 768px) 40px, 48px"
+                        />
+                      </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="text-sm font-medium text-white truncate">{item.name}</h4>
                         <p className="text-gray-400 text-xs">Qty: {item.quantity}</p>

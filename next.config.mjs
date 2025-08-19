@@ -11,13 +11,27 @@ const nextConfig = {
   // trailingSlash: true, // Commented out for development
   // distDir: 'out', // Commented out for development
   images: {
-    unoptimized: true, // Required for static export
+    unoptimized: false, // Enable image optimization
     formats: ['image/webp', 'image/avif'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 31536000, // 1 year cache
     loader: 'default',
     path: '',
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '*.supabase.co',
+        port: '',
+        pathname: '/storage/v1/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.supabase.co',
+        port: '',
+        pathname: '/storage/v1/render/**',
+      },
+    ],
   },
   // Ensure proper routing for Vercel
   // skipTrailingSlashRedirect: true, // Not needed for Vercel

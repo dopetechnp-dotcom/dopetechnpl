@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { X, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { type Product } from '@/lib/products-data'
+import Image from 'next/image'
 
 interface CartItemEditorProps {
   product: Product
@@ -84,12 +85,16 @@ export function CartItemEditor({
           </div>
 
           {/* Product Info */}
-          <div className="flex items-center space-x-3 mb-4 p-3 bg-gray-50 dark:bg-[#2a2a2a] rounded-lg">
-            <img
-              src={product.image_url}
-              alt={product.name}
-              className="w-12 h-12 object-cover rounded-lg"
-            />
+          <div className="flex items-start space-x-4">
+            <div className="relative w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+              <Image
+                src={product.image_url}
+                alt={product.name}
+                fill
+                className="object-cover"
+                sizes="80px"
+              />
+            </div>
             <div>
               <h4 className="font-medium text-gray-900 dark:text-white text-sm">{product.name}</h4>
               <p className="text-[#F7DD0F] font-bold text-sm">Rs {product.price}</p>

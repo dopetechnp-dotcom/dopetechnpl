@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { ProductImage, addProductImage, deleteProductImage, setPrimaryImage, reorderProductImages } from '@/lib/products-data'
+import Image from "next/image"
 
 interface ProductImageManagerProps {
   productId: number
@@ -225,12 +226,15 @@ export function ProductImageManager({ productId, onImagesChange, initialImages =
               className="relative group bg-white/5 border border-white/10 rounded-lg overflow-hidden hover:border-white/20 transition-all duration-200"
             >
               {/* Image */}
-              <div className="aspect-square relative">
-                <img
-                  src={image.image_url}
-                  alt={`Product image ${index + 1}`}
-                  className="w-full h-full object-cover"
-                />
+              <div className="aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700">
+                  <Image
+                    src={image.image_url}
+                    alt={image.file_name || 'Product image'}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  />
+                </div>
                 
                 {/* Primary indicator */}
                 {image.is_primary && (

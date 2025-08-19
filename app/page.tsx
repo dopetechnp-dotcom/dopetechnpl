@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useMemo, useCallback } from "react"
 import { useLogoUrl, useVideoUrl } from "@/hooks/use-assets"
+import Image from "next/image"
 
 import { useRouter } from "next/navigation"
 import { SlidingCardCarousel } from "@/components/sliding-card-carousel"
@@ -130,6 +131,8 @@ export default function DopeTechEcommerce() {
   const [animationKey, setAnimationKey] = useState(0)
   const [isLoading, setIsLoading] = useState(false) // Start as false to prevent hydration mismatch
   const [isClientLoading, setIsClientLoading] = useState(false) // Client-only loading state
+  const [hasMounted, setHasMounted] = useState(false) // Track if component has mounted
+  const [showLoadingOverlay, setShowLoadingOverlay] = useState(false) // Control loading overlay visibility
   const [posterIndex, setPosterIndex] = useState(0)
   const searchModalRef = useRef<HTMLDivElement>(null)
   const categorySectionRef = useRef<HTMLDivElement>(null)
@@ -148,9 +151,16 @@ export default function DopeTechEcommerce() {
     }
   }, [])
 
-  // Set client loading state on mount
+  // Set client loading state on mount - only on client side
   useEffect(() => {
-    setIsClientLoading(true)
+    setHasMounted(true)
+    if (typeof window !== 'undefined') {
+      setIsClientLoading(true)
+      // Show loading overlay only after a short delay to prevent hydration issues
+      setTimeout(() => {
+        setShowLoadingOverlay(true)
+      }, 100)
+    }
   }, [])
 
   // Product fetching with optimized loading states
@@ -177,6 +187,7 @@ export default function DopeTechEcommerce() {
               setCurrentProducts([])
             }
             setIsClientLoading(false)
+            setShowLoadingOverlay(false)
           }
         }, 'Loading products...')
       } catch (error) {
@@ -185,6 +196,7 @@ export default function DopeTechEcommerce() {
           setProducts([])
           setCurrentProducts([])
           setIsClientLoading(false)
+          setShowLoadingOverlay(false)
         }
       }
     }
@@ -194,6 +206,7 @@ export default function DopeTechEcommerce() {
       console.warn('⚠️ Fallback timeout reached - clearing loading state')
       if (isMounted) {
         setIsClientLoading(false)
+        setShowLoadingOverlay(false)
       }
     }, 12000) // 12 second fallback
 
@@ -204,6 +217,14 @@ export default function DopeTechEcommerce() {
       clearTimeout(fallbackTimeout)
     }
   }, [withLoading])
+
+  // Cleanup loading overlay on unmount
+  useEffect(() => {
+    return () => {
+      setShowLoadingOverlay(false)
+      setIsClientLoading(false)
+    }
+  }, [])
 
   // Fetch dope picks (random selection of max 6 products)
   useEffect(() => {
@@ -823,40 +844,36 @@ export default function DopeTechEcommerce() {
     ]
   }
 
-  const [categories, setCategories] = useState<{ id: string; name: string; icon: CategoryIcon }[]>([
-    { id: "all", name: "All Products", icon: Grid },
-    { id: "keyboard", name: "Keyboards", icon: Keyboard },
-    { id: "mouse", name: "Mouse", icon: Mouse },
-    { id: "audio", name: "Audio", icon: Headphones },
-    { id: "speaker", name: "Speakers", icon: Speaker },
-    { id: "monitor", name: "Monitors", icon: Camera },
-    { id: "accessory", name: "Accessories", icon: Cable },
-  ])
+  const [categories, setCategories] = useState<{ id: string; name: string; icon: CategoryIcon }[]>([])
+  const [categoriesInitialized, setCategoriesInitialized] = useState(false)
 
-  // Initialize categories from localStorage or use defaults
+  // Initialize categories from localStorage or use defaults - only on client side
   useEffect(() => {
-    const adminCategories = getCategories()
-    setCategories(adminCategories)
+    if (typeof window !== 'undefined') {
+      const adminCategories = getCategories()
+      setCategories(adminCategories)
+      setCategoriesInitialized(true)
+    }
   }, [])
 
-  // Optimized category icon cycling
+  // Optimized category icon cycling - only on client side
   useEffect(() => {
-    if (!showBackToCategories || categories.length === 0) return
+    if (typeof window === 'undefined' || !showBackToCategories || !categoriesInitialized || categories.length === 0) return
     const id = setInterval(() => {
       setCategoryIconIndex((prev) => (prev + 1) % categories.length)
     }, 900)
     return () => clearInterval(id)
-  }, [showBackToCategories, categories])
+  }, [showBackToCategories, categories, categoriesInitialized])
 
   return (
     <PageTransition>
       <div className="text-white min-h-screen transition-colors duration-100 tap-feedback scrollbar-hide gradient-bg">
         {/* SEO handled by layout.tsx metadata */}
       
-      {/* Loading Overlay */}
+      {/* Loading Overlay - Client Only */}
       <ClientOnly fallback={null}>
-        {isClientLoading && isLoading && (
-          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center">
+        {hasMounted && showLoadingOverlay && isClientLoading && isLoading && (
+          <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center">
             <div className="text-center">
               <div className="w-16 h-16 border-4 border-[#F7DD0F] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
               <p className="text-[#F7DD0F] font-semibold mb-2">Loading DopeTech...</p>
@@ -1017,33 +1034,56 @@ export default function DopeTechEcommerce() {
                 </p>
               </div>
               
-              <div className="space-y-2">
-                {categories.map((category) => (
-                  <button
-                    key={category.id}
-                    onClick={() => {
-                      handleCategoryClick(category.id)
-                      setIsMobileMenuOpen(false)
-                    }}
-                    className={`w-full flex items-center space-x-2 px-3 py-2.5 rounded-xl transition-all duration-200 ${
-                      selectedCategory === category.id
-                        ? "bg-[#F7DD0F] text-black shadow-lg"
-                        : "text-white bg-white/5 border border-white/20 hover:bg-white/10 shadow-lg"
-                    }`}
-                    style={{ minHeight: '48px', minWidth: '44px' }}
-                  >
-                    {/* Category Icon */}
-                    <div className={`flex-shrink-0 ${
-                      selectedCategory === category.id ? "text-black" : "text-[#F7DD0F]"
-                    }`}>
-                      {renderCategoryIcon(category.icon, "w-5 h-5")}
+              <ClientOnly fallback={
+                <div className="space-y-2">
+                  {[
+                    { id: "all", name: "All Products" },
+                    { id: "keyboard", name: "Keyboards" },
+                    { id: "mouse", name: "Mouse" },
+                    { id: "audio", name: "Audio" },
+                    { id: "speaker", name: "Speakers" },
+                    { id: "monitor", name: "Monitors" },
+                    { id: "accessory", name: "Accessories" }
+                  ].map((category) => (
+                    <div key={category.id} className="w-full flex items-center space-x-2 px-3 py-2.5 rounded-xl bg-white/5 border border-white/20" style={{ minHeight: '48px', minWidth: '44px' }}>
+                      <div className="flex-shrink-0 text-[#F7DD0F]">
+                        <Grid className="w-5 h-5" />
+                      </div>
+                      <span className="font-medium text-sm text-white">{category.name}</span>
                     </div>
-                    
-                    {/* Category Name */}
-                    <span className="font-medium text-sm">{category.name}</span>
-                  </button>
-                ))}
-              </div>
+                  ))}
+                </div>
+              }>
+                {categoriesInitialized && (
+                  <div className="space-y-2">
+                    {categories.map((category) => (
+                      <button
+                        key={category.id}
+                        onClick={() => {
+                          handleCategoryClick(category.id)
+                          setIsMobileMenuOpen(false)
+                        }}
+                        className={`w-full flex items-center space-x-2 px-3 py-2.5 rounded-xl transition-all duration-200 ${
+                          selectedCategory === category.id
+                            ? "bg-[#F7DD0F] text-black shadow-lg"
+                            : "text-white bg-white/5 border border-white/20 hover:bg-white/10 shadow-lg"
+                        }`}
+                        style={{ minHeight: '48px', minWidth: '44px' }}
+                      >
+                        {/* Category Icon */}
+                        <div className={`flex-shrink-0 ${
+                          selectedCategory === category.id ? "text-black" : "text-[#F7DD0F]"
+                        }`}>
+                          {renderCategoryIcon(category.icon, "w-5 h-5")}
+                        </div>
+                        
+                        {/* Category Name */}
+                        <span className="font-medium text-sm">{category.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </ClientOnly>
             </div>
           )}
         </div>
@@ -1116,31 +1156,56 @@ export default function DopeTechEcommerce() {
             {/* Category Filter - Mobile Optimized Spacing */}
             <div ref={categorySectionRef} className="mb-6 sm:mb-12 px-4 animate-fade-in-up stagger-5">
               {/* Unified Category Layout */}
-              <div className="flex flex-wrap justify-center gap-3 w-full">
-                {categories.map((category, index) => (
-                  <div key={category.id} className="relative animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
-                    <button
-                      onClick={() => handleCategoryClick(category.id)}
-                      className={`flex items-center space-x-2 px-4 py-3 rounded-full transition-all duration-300 cursor-pointer text-sm min-h-[48px] shadow-lg ${
-                        selectedCategory === category.id
-                          ? "bg-[#F7DD0F] text-black font-bold"
-                          : "bg-white/10 hover:bg-white/15 font-medium border border-white/10"
-                      }`}
-                      aria-label={`Filter by ${category.name}`}
-                    >
-                      {/* Category Icon */}
-                      <div className={`flex-shrink-0 ${
-                        selectedCategory === category.id ? "text-black" : "text-[#F7DD0F]"
-                      }`}>
-                        {renderCategoryIcon(category.icon, "w-5 h-5")}
+              <ClientOnly fallback={
+                <div className="flex flex-wrap justify-center gap-3 w-full">
+                  {[
+                    { id: "all", name: "All Products" },
+                    { id: "keyboard", name: "Keyboards" },
+                    { id: "mouse", name: "Mouse" },
+                    { id: "audio", name: "Audio" },
+                    { id: "speaker", name: "Speakers" },
+                    { id: "monitor", name: "Monitors" },
+                    { id: "accessory", name: "Accessories" }
+                  ].map((category, index) => (
+                    <div key={category.id} className="relative animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                      <div className="flex items-center space-x-2 px-4 py-3 rounded-full bg-white/10 border border-white/10 text-sm min-h-[48px] shadow-lg">
+                        <div className="flex-shrink-0 text-[#F7DD0F]">
+                          <Grid className="w-5 h-5" />
+                        </div>
+                        <span className="font-medium text-white">{category.name}</span>
                       </div>
-                      
-                      {/* Category Name */}
-                      <span className="font-medium">{category.name}</span>
-                    </button>
+                    </div>
+                  ))}
+                </div>
+              }>
+                {categoriesInitialized && (
+                  <div className="flex flex-wrap justify-center gap-3 w-full">
+                    {categories.map((category, index) => (
+                      <div key={category.id} className="relative animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                        <button
+                          onClick={() => handleCategoryClick(category.id)}
+                          className={`flex items-center space-x-2 px-4 py-3 rounded-full transition-all duration-300 cursor-pointer text-sm min-h-[48px] shadow-lg ${
+                            selectedCategory === category.id
+                              ? "bg-[#F7DD0F] text-black font-bold"
+                              : "bg-white/10 hover:bg-white/15 font-medium border border-white/10"
+                          }`}
+                          aria-label={`Filter by ${category.name}`}
+                        >
+                          {/* Category Icon */}
+                          <div className={`flex-shrink-0 ${
+                            selectedCategory === category.id ? "text-black" : "text-[#F7DD0F]"
+                          }`}>
+                            {renderCategoryIcon(category.icon, "w-5 h-5")}
+                          </div>
+                          
+                          {/* Category Name */}
+                          <span className="font-medium">{category.name}</span>
+                        </button>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                )}
+              </ClientOnly>
             </div>
           </div>
 
@@ -1524,7 +1589,7 @@ export default function DopeTechEcommerce() {
 
 
       {/* Jump to Categories floating button - Circular like AI chat */}
-      {!cartOpen && !checkoutModalOpen && !isCategoryInView && categories.length > 0 && (
+      {!cartOpen && !checkoutModalOpen && !isCategoryInView && categoriesInitialized && categories.length > 0 && (
         <button
           onClick={scrollToCategoryFilters}
           className="fixed bottom-6 right-4 md:bottom-8 md:right-6 z-[9999] frosted-glass-yellow frosted-glass-yellow-hover text-black p-4 rounded-full touch-manipulation flex items-center justify-center transition-all duration-300 ease-in-out shadow-lg"

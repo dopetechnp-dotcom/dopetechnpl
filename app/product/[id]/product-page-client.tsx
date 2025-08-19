@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowLeft, Plus, Heart, Star, Truck, Shield, RotateCcw, ShoppingBag, X, Minus, Edit, Check, Zap, Award, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -9,6 +9,7 @@ import SupabaseCheckout from "@/components/supabase-checkout"
 import { type Product, getPrimaryImageUrl, getProductImageUrls } from "@/lib/products-data"
 import { ProductOptionsSelector } from "@/components/product-options-selector"
 import { CartItemEditor } from "@/components/cart-item-editor"
+import Image from "next/image"
 
 interface ProductPageClientProps {
   product: Product
@@ -100,15 +101,13 @@ export default function ProductPageClient({ product, relatedProducts }: ProductP
             <div className="relative group">
               <div className="aspect-square max-w-md mx-auto xl:max-w-lg bg-[#1a1a1a] rounded-2xl overflow-hidden shadow-2xl border border-[#F7DD0F]/20 hover:border-[#F7DD0F]/40 transition-all duration-500">
                 <div className="relative w-full h-full">
-                  <img
+                  <Image
                     src={getProductImageUrls(product)[selectedImage] || getPrimaryImageUrl(product)}
                     alt={product.name}
-                    className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
-                    loading="lazy"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = '/placeholder-product.svg';
-                    }}
+                    fill
+                    className="object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    priority={true}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 </div>
@@ -127,21 +126,18 @@ export default function ProductPageClient({ product, relatedProducts }: ProductP
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`aspect-square rounded-xl overflow-hidden border-2 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 ${
+                    className={`aspect-square rounded-xl overflow-hidden border-2 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 relative ${
                       selectedImage === index 
                         ? 'border-yellow-500 shadow-lg ring-2 ring-yellow-500/30 scale-105' 
                         : 'border-gray-600 hover:border-yellow-500/50 hover:shadow-md'
                     }`}
                   >
-                    <img
+                    <Image
                       src={image}
                       alt={`${product.name} ${index + 1}`}
-                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
-                      loading="lazy"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = '/placeholder-product.svg';
-                      }}
+                      fill
+                      className="object-cover transition-transform duration-300 hover:scale-110"
+                      sizes="(max-width: 640px) 20vw, 15vw"
                     />
                   </button>
                 ))}
@@ -286,8 +282,8 @@ export default function ProductPageClient({ product, relatedProducts }: ProductP
             </h2>
             <p className="text-gray-400">Discover more amazing products</p>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-            {relatedProducts.map((relatedProduct) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {relatedProducts.slice(0, 4).map((relatedProduct) => (
               <div
                 key={relatedProduct.id}
                 onClick={() => router.push(`/product/${relatedProduct.id}`)}
@@ -300,15 +296,12 @@ export default function ProductPageClient({ product, relatedProducts }: ProductP
                 }}
               >
                 <div className="aspect-square overflow-hidden">
-                  <img
+                  <Image
                     src={getPrimaryImageUrl(relatedProduct)}
                     alt={relatedProduct.name}
+                    fill
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    loading="lazy"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = '/placeholder-product.svg';
-                    }}
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
                   />
                 </div>
                 <div className="p-4">
@@ -360,9 +353,11 @@ export default function ProductPageClient({ product, relatedProducts }: ProductP
                     {cart.map((item) => (
                       <div key={item.id} className="bg-black border border-[#F7DD0F]/20 rounded-2xl p-3 sm:p-4 space-y-3 sm:space-y-4">
                         <div className="flex items-start space-x-3 sm:space-x-4">
-                          <img
+                          <Image
                             src={item.image_url}
                             alt={item.name}
+                            width={64}
+                            height={64}
                             className="w-14 h-14 sm:w-16 sm:h-16 object-cover rounded-xl flex-shrink-0"
                           />
                           <div className="flex-1 min-w-0">

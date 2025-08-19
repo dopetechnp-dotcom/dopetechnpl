@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 
 interface PageTransitionProps {
@@ -10,27 +10,83 @@ interface PageTransitionProps {
 export function PageTransition({ children }: PageTransitionProps) {
   const [isTransitioning, setIsTransitioning] = useState(false)
   const router = useRouter()
+  const scrollRef = useRef<number>(0)
+  const tickingRef = useRef<boolean>(false)
 
   useEffect(() => {
     // Add smooth scroll behavior
     document.documentElement.style.scrollBehavior = 'smooth'
     
-    // Add scroll progress indicator
+    // Optimized scroll progress indicator with throttling and RAF
     const handleScroll = () => {
-      const scrollTop = window.pageYOffset
-      const docHeight = document.body.offsetHeight - window.innerHeight
-      const scrollPercent = (scrollTop / docHeight) * 100
+      scrollRef.current = window.pageYOffset
       
-      const indicator = document.querySelector('.scroll-indicator') as HTMLElement
-      if (indicator) {
-        indicator.style.transform = `scaleX(${scrollPercent / 100})`
+      if (!tickingRef.current) {
+        requestAnimationFrame(() => {
+          updateScrollProgress(scrollRef.current)
+          tickingRef.current = false
+        })
+        tickingRef.current = true
       }
     }
 
-    window.addEventListener('scroll', handleScroll, { passive: true })
+    const updateScrollProgress = (scrollTop: number) => {
+      const docHeight = document.body.offsetHeight - window.innerHeight
+      const scrollPercent = Math.min((scrollTop / docHeight) * 100, 100)
+      
+      const indicator = document.querySelector('.scroll-indicator') as HTMLElement
+      if (indicator) {
+        // Use CSS custom property for better performance
+        indicator.style.setProperty('--scroll-progress', `${scrollPercent}%`)
+        indicator.style.width = `${scrollPercent}%`
+      }
+    }
+
+    // Enhanced throttled scroll listener for better mobile performance
+    let timeoutId: NodeJS.Timeout
+    let isScrolling = false
+    
+    const throttledScrollHandler = () => {
+      if (!isScrolling) {
+        isScrolling = true
+        handleScroll()
+        
+        // Reset scrolling flag after a short delay
+        setTimeout(() => {
+          isScrolling = false
+        }, 16) // ~60fps
+      }
+    }
+
+    // Use different throttling for mobile vs desktop
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    const throttleDelay = isMobile ? 32 : 16 // Slower updates on mobile for better performance
+
+    const mobileOptimizedHandler = () => {
+      clearTimeout(timeoutId)
+      timeoutId = setTimeout(throttledScrollHandler, throttleDelay)
+    }
+
+    window.addEventListener('scroll', mobileOptimizedHandler, { passive: true })
+    
+    // Add touch event handling for mobile
+    if (isMobile) {
+      window.addEventListener('touchmove', mobileOptimizedHandler, { passive: true })
+      window.addEventListener('touchend', () => {
+        // Final update after touch ends
+        setTimeout(() => {
+          updateScrollProgress(window.pageYOffset)
+        }, 100)
+      }, { passive: true })
+    }
     
     return () => {
-      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('scroll', mobileOptimizedHandler)
+      if (isMobile) {
+        window.removeEventListener('touchmove', mobileOptimizedHandler)
+        window.removeEventListener('touchend', () => {})
+      }
+      clearTimeout(timeoutId)
     }
   }, [])
 
@@ -121,3 +177,4 @@ export function useSmoothScroll() {
 
   return { scrollToElement, scrollToTop }
 }
+

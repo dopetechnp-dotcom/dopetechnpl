@@ -1,8 +1,16 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { useDragScroll } from '@/hooks/useDragScroll';
-import { useMarqueeControl } from '@/hooks/useMarqueeControl';
-import type { Product } from '@/lib/products-data';
-import { getPrimaryImageUrl } from '@/lib/products-data';
+"use client"
+
+import { useState, useRef, useEffect, useCallback } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Plus, Heart, Star, ShoppingCart } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useCart } from "@/contexts/cart-context"
+import { getPrimaryImageUrl, type Product } from "@/lib/products-data"
+import { useDragScroll } from "@/hooks/useDragScroll"
+import { useMarqueeControl } from "@/hooks/useMarqueeControl"
+import Image from "next/image"
 
 interface DraggableMarqueeProps {
   products: Product[];
@@ -173,16 +181,15 @@ export const DraggableMarquee: React.FC<DraggableMarqueeProps> = ({
               className="group relative flex-shrink-0"
             >
               <div className="relative overflow-hidden rounded-2xl w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 bg-gradient-to-br from-white/5 to-white/10 border border-white/10 backdrop-blur-sm shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105">
-                <img
-                  src={getPrimaryImageUrl(product)}
-                  alt={product.name}
-                  className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110 group-hover:rotate-1"
-                  draggable={false}
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = '/placeholder-product.svg';
-                  }}
-                />
+                <div className="aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700">
+                  <Image
+                    src={getPrimaryImageUrl(product)}
+                    alt={product.name}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+                  />
+                </div>
                 
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -212,16 +219,15 @@ export const DraggableMarquee: React.FC<DraggableMarqueeProps> = ({
               className="group relative flex-shrink-0"
             >
               <div className="relative overflow-hidden rounded-2xl w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 bg-gradient-to-br from-white/5 to-white/10 border border-white/10 backdrop-blur-sm shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105">
-                <img
-                  src={getPrimaryImageUrl(product)}
-                  alt={product.name}
-                  className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110 group-hover:rotate-1"
-                  draggable={false}
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = '/placeholder-product.svg';
-                  }}
-                />
+                <div className="aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700">
+                  <Image
+                    src={getPrimaryImageUrl(product)}
+                    alt={product.name}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+                  />
+                </div>
                 
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

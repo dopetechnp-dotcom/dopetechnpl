@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react"
 import { X, Upload, CheckCircle, AlertCircle, CreditCard, MessageCircle, Truck, Package, Lock, ChevronDown, ChevronUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useLogoUrl } from "@/hooks/use-assets"
+import Image from "next/image"
 
 interface CartItem {
   id: number
@@ -254,7 +255,13 @@ export default function CheckoutModal({ isOpen, onClose, cart, total }: Checkout
         {/* Header */}
         <div className="flex items-center justify-between p-4 md:p-6 border-b border-white/20 bg-white/10 backdrop-blur-sm animate-slide-in-down">
           <div className="flex items-center space-x-3 md:space-x-4">
-                            <img src={logoLoading ? "/logo/dopelogo.svg" : logoUrl} alt="DopeTech" className="h-6 md:h-8 w-auto" />
+            <Image 
+              src={logoLoading ? "/logo/dopelogo.svg" : logoUrl} 
+              alt="DopeTech" 
+              width={32}
+              height={32}
+              className="h-6 md:h-8 w-auto" 
+            />
             <span className="text-base md:text-lg font-semibold text-[#F7DD0F]">
               {activeTab === 'payment-selection' ? 'Payment Options' : 
                activeTab === 'payment' ? 'Payment' : 
@@ -568,7 +575,13 @@ export default function CheckoutModal({ isOpen, onClose, cart, total }: Checkout
                 <div className="space-y-3 md:space-y-4 mb-4 md:mb-6">
                   {cart.map((item) => (
                     <div key={item.id} className="flex items-center space-x-3 p-3 bg-white/5 rounded-lg border border-white/10 backdrop-blur-sm">
-                      <img src={item.image_url} alt={item.name} className="w-10 h-10 md:w-12 md:h-12 object-cover rounded-lg" />
+                      <Image
+                        src={item.image_url}
+                        alt={item.name}
+                        width={48}
+                        height={48}
+                        className="w-10 h-10 md:w-12 md:h-12 object-cover rounded-lg"
+                      />
                       <div className="flex-1 min-w-0">
                         <h3 className="font-medium text-white text-sm md:text-base truncate">{item.name}</h3>
                         <p className="text-sm text-gray-300">{item.quantity}x</p>
@@ -710,9 +723,11 @@ export default function CheckoutModal({ isOpen, onClose, cart, total }: Checkout
                 <h3 className="text-white font-semibold text-lg md:text-xl mb-3">Scan to pay</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 items-center">
                   <div className="bg-black/40 rounded-xl p-2 md:p-3 border border-white/10 flex items-center justify-center">
-                    <img 
+                    <Image
                       src="/payment/paymentQR.svg" 
                       alt="Payment QR" 
+                      width={200}
+                      height={200}
                       className="w-full h-auto max-w-[200px] md:max-w-[280px] max-h-[400px] md:max-h-[500px]"
                       onLoad={(e) => {
                         console.log('✅ Payment QR code loaded successfully');
@@ -773,7 +788,13 @@ export default function CheckoutModal({ isOpen, onClose, cart, total }: Checkout
                 ) : (
                   <div className="space-y-4">
                     <div className="bg-black/40 rounded-xl p-3 border border-white/10 flex items-center justify-center">
-                      <img src={receiptPreview} alt="Receipt preview" className="max-h-48 md:max-h-56 w-auto rounded-md" />
+                      <Image 
+                        src={receiptPreview} 
+                        alt="Receipt preview" 
+                        width={400}
+                        height={300}
+                        className="max-h-48 md:max-h-56 w-auto rounded-md" 
+                      />
                     </div>
                     <div className="flex items-center justify-between">
                       <button
