@@ -66,25 +66,25 @@ export function ProductImageManager({ productId, onImagesChange, initialImages =
 
       const imageUrl = urlData.publicUrl
 
-             // For new products (productId = 0), just add to local state
-       if (productId === 0) {
-         const tempImage: ProductImage = {
-           id: Date.now(), // Temporary ID
-           product_id: 0,
-           image_url: imageUrl,
-           file_name: file.name,
-           display_order: images.length + 1,
-           is_primary: images.length === 0,
-           created_at: new Date().toISOString(),
-           updated_at: new Date().toISOString()
-         }
+      // For new products (productId = 0), just add to local state
+      if (productId === 0) {
+        const tempImage: ProductImage = {
+          id: Date.now(), // Temporary ID
+          product_id: 0,
+          image_url: imageUrl,
+          file_name: file.name,
+          display_order: images.length + 1,
+          is_primary: images.length === 0,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
         const updatedImages = [...images, tempImage]
         setImages(updatedImages)
         onImagesChange?.(updatedImages)
         setUploadProgress(100)
-             } else {
-         // Add to product_images table for existing products
-         const newImage = await addProductImage(productId, imageUrl, file.name, images.length === 0)
+      } else {
+        // Add to product_images table for existing products
+        const newImage = await addProductImage(productId, imageUrl, file.name, images.length === 0)
         
         if (newImage) {
           const updatedImages = [...images, newImage]
@@ -227,76 +227,75 @@ export function ProductImageManager({ productId, onImagesChange, initialImages =
             >
               {/* Image */}
               <div className="aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700">
-                  <Image
-                    src={image.image_url}
-                    alt={image.file_name || 'Product image'}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  />
+                <Image
+                  src={image.image_url}
+                  alt={image.file_name || 'Product image'}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                />
+              </div>
+              
+              {/* Primary indicator */}
+              {image.is_primary && (
+                <div className="absolute top-2 left-2 bg-yellow-500 text-black px-2 py-1 rounded-full text-xs font-semibold flex items-center space-x-1">
+                  <StarIcon className="w-3 h-3 fill-current" />
+                  <span>Primary</span>
                 </div>
-                
-                {/* Primary indicator */}
-                {image.is_primary && (
-                  <div className="absolute top-2 left-2 bg-yellow-500 text-black px-2 py-1 rounded-full text-xs font-semibold flex items-center space-x-1">
-                    <StarIcon className="w-3 h-3 fill-current" />
-                    <span>Primary</span>
-                  </div>
-                )}
+              )}
 
-                {/* Overlay with actions */}
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
-                  <div className="flex items-center space-x-2">
-                    {/* Set as primary */}
-                    {!image.is_primary && (
-                      <button
-                        onClick={() => handleSetPrimary(image.id)}
-                        className="p-2 bg-yellow-500/20 hover:bg-yellow-500/30 rounded-lg transition-colors duration-200 text-yellow-400 hover:text-yellow-300"
-                        title="Set as primary"
-                      >
-                        <Star className="w-4 h-4" />
-                      </button>
-                    )}
-
-                    {/* Move up */}
-                    {index > 0 && (
-                      <button
-                        onClick={() => handleMoveImage(image.id, 'up')}
-                        className="p-2 bg-blue-500/20 hover:bg-blue-500/30 rounded-lg transition-colors duration-200 text-blue-400 hover:text-blue-300"
-                        title="Move up"
-                      >
-                        <MoveUp className="w-4 h-4" />
-                      </button>
-                    )}
-
-                    {/* Move down */}
-                    {index < images.length - 1 && (
-                      <button
-                        onClick={() => handleMoveImage(image.id, 'down')}
-                        className="p-2 bg-blue-500/20 hover:bg-blue-500/30 rounded-lg transition-colors duration-200 text-blue-400 hover:text-blue-300"
-                        title="Move down"
-                      >
-                        <MoveDown className="w-4 h-4" />
-                      </button>
-                    )}
-
-                    {/* Delete */}
+              {/* Overlay with actions */}
+              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                <div className="flex items-center space-x-2">
+                  {/* Set as primary */}
+                  {!image.is_primary && (
                     <button
-                      onClick={() => handleDeleteImage(image.id)}
-                      className="p-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg transition-colors duration-200 text-red-400 hover:text-red-300"
-                      title="Delete image"
+                      onClick={() => handleSetPrimary(image.id)}
+                      className="p-2 bg-yellow-500/20 hover:bg-yellow-500/30 rounded-lg transition-colors duration-200 text-yellow-400 hover:text-yellow-300"
+                      title="Set as primary"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Star className="w-4 h-4" />
                     </button>
-                  </div>
+                  )}
+
+                  {/* Move up */}
+                  {index > 0 && (
+                    <button
+                      onClick={() => handleMoveImage(image.id, 'up')}
+                      className="p-2 bg-blue-500/20 hover:bg-blue-500/30 rounded-lg transition-colors duration-200 text-blue-400 hover:text-blue-300"
+                      title="Move up"
+                    >
+                      <MoveUp className="w-4 h-4" />
+                    </button>
+                  )}
+
+                  {/* Move down */}
+                  {index < images.length - 1 && (
+                    <button
+                      onClick={() => handleMoveImage(image.id, 'down')}
+                      className="p-2 bg-blue-500/20 hover:bg-blue-500/30 rounded-lg transition-colors duration-200 text-blue-400 hover:text-blue-300"
+                      title="Move down"
+                    >
+                      <MoveDown className="w-4 h-4" />
+                    </button>
+                  )}
+
+                  {/* Delete */}
+                  <button
+                    onClick={() => handleDeleteImage(image.id)}
+                    className="p-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg transition-colors duration-200 text-red-400 hover:text-red-300"
+                    title="Delete image"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
 
-                             {/* Image info */}
-               <div className="p-3">
-                 <p className="text-sm text-gray-300">Image {index + 1}</p>
-                 <p className="text-xs text-gray-500">Order: {image.display_order}</p>
-               </div>
+              {/* Image info */}
+              <div className="p-3">
+                <p className="text-sm text-gray-300">Image {index + 1}</p>
+                <p className="text-xs text-gray-500">Order: {image.display_order}</p>
+              </div>
             </div>
           ))}
         </div>
