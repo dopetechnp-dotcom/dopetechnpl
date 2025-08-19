@@ -22,12 +22,36 @@ export function ProductOptionsSelector({
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>(initialFeatures)
 
   // Available colors - split by comma if multiple colors are provided
-  const availableColors = product.color 
-    ? product.color.split(',').map(color => color.trim()).filter(color => color.length > 0)
-    : []
+  const availableColors = (() => {
+    if (!product.color) return []
+    if (typeof product.color === 'string') {
+      return product.color.split(',').map(color => color.trim()).filter(color => color.length > 0)
+    }
+    return []
+  })()
   
-  // Available features from the product
-  const availableFeatures = product.features || []
+  // Available features from the product - handle various "empty" cases
+  const availableFeatures = (() => {
+    if (!product.features) return []
+    if (Array.isArray(product.features)) {
+      return product.features.filter(feature => feature && feature.trim().length > 0)
+    }
+    if (typeof product.features === 'string') {
+      return product.features.trim().length > 0 ? [product.features] : []
+    }
+    return []
+  })()
+  
+  // Debug logging
+  console.log('🔍 ProductOptionsSelector Debug:', {
+    productId: product.id,
+    productName: product.name,
+    productColor: product.color,
+    productFeatures: product.features,
+    availableColors,
+    availableFeatures,
+    shouldShow: availableColors.length > 0 || availableFeatures.length > 0
+  })
 
   useEffect(() => {
     onOptionsChange(selectedColor, selectedFeatures)
