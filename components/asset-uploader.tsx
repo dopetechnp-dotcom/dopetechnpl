@@ -153,9 +153,9 @@ export function AssetUploader() {
         {/* Header Section */}
         <CardHeader className="pb-4 sm:pb-6 border-b border-white/10 p-4 sm:p-6">
           <div className="flex items-center gap-2 sm:gap-3">
-            <div className="p-2 sm:p-3 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg sm:rounded-xl flex-shrink-0">
-              <Upload className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-blue-400" />
-            </div>
+                            <div className="p-2 sm:p-3 bg-gradient-to-br from-gray-800/20 to-black/20 rounded-lg sm:rounded-xl flex-shrink-0">
+                  <Upload className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-[#F7DD0F]" />
+                </div>
             <div className="min-w-0 flex-1">
               <CardTitle className="text-lg sm:text-xl lg:text-2xl font-bold text-white leading-tight">
                 Upload New Assets
@@ -197,7 +197,7 @@ export function AssetUploader() {
                 onChange={handleFileSelect}
                 accept={getAcceptTypes()}
                 disabled={uploading}
-                className="file:text-blue-500 file:hover:text-blue-600 file:font-semibold file:bg-transparent file:border-0 file:py-2 sm:file:py-3 file:px-3 sm:file:px-4 file:rounded-lg file:cursor-pointer file:transition-colors file:duration-200 border-white/20 bg-white/10 text-white h-12 sm:h-14 text-sm sm:text-base"
+                className="file:text-[#F7DD0F] file:hover:text-[#F7DD0F]/80 file:font-semibold file:bg-transparent file:border-0 file:py-2 sm:file:py-3 file:px-3 sm:file:px-4 file:rounded-lg file:cursor-pointer file:transition-colors file:duration-200 border-white/20 bg-white/10 text-white h-12 sm:h-14 text-sm sm:text-base"
               />
             </div>
 
@@ -205,7 +205,7 @@ export function AssetUploader() {
             {selectedFile && (
               <div className="bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-sm border border-white/20 rounded-lg sm:rounded-xl p-3 sm:p-4">
                 <div className="flex items-center space-x-3 sm:space-x-4">
-                  <div className="p-2 sm:p-3 bg-blue-500/20 rounded-lg flex-shrink-0">
+                  <div className="p-2 sm:p-3 bg-[#F7DD0F]/20 rounded-lg flex-shrink-0">
                     {getAssetTypeIcon(assetType)}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -229,7 +229,7 @@ export function AssetUploader() {
                 Asset Type
               </Label>
               <Select value={assetType} onValueChange={(value: 'logo' | 'video' | 'image') => setAssetType(value)}>
-                <SelectTrigger className="bg-white/10 border-white/20 text-white focus:ring-blue-500 focus:border-blue-500 h-12 sm:h-14 text-sm sm:text-base">
+                <SelectTrigger className="bg-white/10 border-white/20 text-white focus:ring-[#F7DD0F] focus:border-[#F7DD0F] h-12 sm:h-14 text-sm sm:text-base">
                   <SelectValue placeholder="Select asset type" />
                 </SelectTrigger>
                 <SelectContent className="bg-slate-800 border-white/20">
@@ -266,28 +266,28 @@ export function AssetUploader() {
                 onChange={(e) => setAssetName(e.target.value)}
                 placeholder="Enter asset name"
                 disabled={uploading}
-                className="bg-white/10 border-white/20 text-white placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500 h-12 sm:h-14 text-sm sm:text-base"
+                className="bg-white/10 border-white/20 text-white placeholder-gray-400 focus:ring-[#F7DD0F] focus:border-[#F7DD0F] h-12 sm:h-14 text-sm sm:text-base"
               />
             </div>
           </div>
 
           {/* File Type Description */}
-          <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-lg p-3 sm:p-4">
-            <p className="text-xs sm:text-sm text-blue-300 font-medium leading-relaxed">
+          <div className="bg-gradient-to-r from-gray-800/10 to-black/10 border border-[#F7DD0F]/20 rounded-lg p-3 sm:p-4">
+            <p className="text-xs sm:text-sm text-[#F7DD0F] font-medium leading-relaxed">
               💡 {getFileTypeDescription(assetType)}
             </p>
           </div>
 
           {/* Upload Progress */}
           {uploading && (
-            <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-lg sm:rounded-xl p-4 sm:p-5">
+            <div className="bg-gradient-to-r from-gray-800/10 to-black/10 border border-[#F7DD0F]/20 rounded-lg sm:rounded-xl p-4 sm:p-5">
               <div className="flex items-center justify-between mb-2 sm:mb-3">
-                <span className="text-blue-300 font-medium text-sm sm:text-base">Uploading...</span>
-                <span className="text-blue-400 font-bold text-base sm:text-lg">{uploadProgress}%</span>
+                <span className="text-[#F7DD0F] font-medium text-sm sm:text-base">Uploading...</span>
+                <span className="text-[#F7DD0F] font-bold text-base sm:text-lg">{uploadProgress}%</span>
               </div>
               <div className="w-full bg-white/10 rounded-full h-2 sm:h-3 overflow-hidden">
                 <div 
-                  className="bg-gradient-to-r from-blue-500 to-purple-500 h-full rounded-full transition-all duration-300 ease-out"
+                  className="bg-gradient-to-r from-[#F7DD0F] to-[#F7DD0F]/80 h-full rounded-full transition-all duration-300 ease-out"
                   style={{ width: `${uploadProgress}%` }}
                 />
               </div>
@@ -299,7 +299,7 @@ export function AssetUploader() {
             <Button
               onClick={handleUpload}
               disabled={!selectedFile || !assetName.trim() || uploading}
-              className="w-full sm:w-auto sm:min-w-[200px] lg:min-w-[240px] bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 sm:py-4 px-6 sm:px-8 rounded-lg sm:rounded-xl transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 shadow-lg hover:shadow-xl text-sm sm:text-base lg:text-lg h-12 sm:h-14"
+              className="w-full sm:w-auto sm:min-w-[200px] lg:min-w-[240px] bg-[#F7DD0F] hover:bg-[#F7DD0F]/90 text-black font-bold py-3 sm:py-4 px-6 sm:px-8 rounded-lg sm:rounded-xl transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 shadow-lg hover:shadow-xl text-sm sm:text-base lg:text-lg h-12 sm:h-14"
             >
               {uploading ? (
                 <div className="flex items-center space-x-2 sm:space-x-3">

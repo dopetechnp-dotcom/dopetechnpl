@@ -121,3 +121,33 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Mobile touch target optimizations */
+.touch-target {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Ensure minimum touch target size for mobile accessibility */
+@media (max-width: 768px) {
+  .touch-target {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+}
+
+/* Shopping cart mobile optimizations */
+@media (max-width: 640px) {
+  .cart-mobile-optimized {
+    max-width: 85vw !important;
+  }
+  
+  .cart-item-mobile {
+    padding: 0.75rem !important;
+  }
+  
+  .cart-button-mobile {
+    min-height: 40px !important;
+    min-width: 40px !important;
+  }
+}

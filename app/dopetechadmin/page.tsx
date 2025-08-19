@@ -38,8 +38,8 @@ function LoginScreen({ password, setPassword, handleLogin }: LoginScreenProps) {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
       <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <Package className="w-8 h-8 text-blue-400" />
+          <div className="w-16 h-16 bg-[#F7DD0F]/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Package className="w-8 h-8 text-[#F7DD0F]" />
           </div>
           <h1 className="text-2xl font-bold text-white mb-2">DopeTech Admin</h1>
           <p className="text-gray-400">Enter your password to continue</p>
@@ -55,7 +55,7 @@ function LoginScreen({ password, setPassword, handleLogin }: LoginScreenProps) {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#F7DD0F] focus:border-transparent"
               placeholder="Enter admin password"
               required
             />
@@ -63,7 +63,7 @@ function LoginScreen({ password, setPassword, handleLogin }: LoginScreenProps) {
           
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 hover:scale-105"
+            className="w-full bg-[#F7DD0F] hover:bg-[#F7DD0F]/90 text-black font-semibold py-3 px-4 rounded-xl transition-all duration-200 hover:scale-105"
           >
             Login
           </button>
@@ -363,9 +363,9 @@ export default function AdminPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-3 sm:space-x-4">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
-                <Package className="w-5 h-5 sm:w-6 sm:h-6 text-blue-400" />
-              </div>
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#F7DD0F]/20 rounded-xl flex items-center justify-center">
+              <Package className="w-5 h-5 sm:w-6 sm:h-6 text-[#F7DD0F]" />
+            </div>
               <div>
                 <h1 className="text-lg sm:text-xl font-bold text-white">DopeTech Admin</h1>
                 <p className="text-xs text-gray-400 hidden sm:block">Dashboard</p>
@@ -386,7 +386,7 @@ export default function AdminPage() {
                   <span className="text-gray-300">{stats.total} Products</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-[#F7DD0F] rounded-full"></div>
                   <span className="text-gray-300">{stats.inStock} In Stock</span>
                 </div>
               </div>
@@ -413,9 +413,9 @@ export default function AdminPage() {
                 <p className="text-xs sm:text-sm text-gray-400">Total Products</p>
                 <p className="text-lg sm:text-2xl font-bold text-white">{stats.total}</p>
               </div>
-              <div className="w-8 h-8 sm:w-12 sm:h-12 bg-blue-500/20 rounded-lg sm:rounded-xl flex items-center justify-center">
-                <Package className="w-4 h-4 sm:w-6 sm:h-6 text-blue-400" />
-              </div>
+                          <div className="w-8 h-8 sm:w-12 sm:h-12 bg-[#F7DD0F]/20 rounded-lg sm:rounded-xl flex items-center justify-center">
+              <Package className="w-4 h-4 sm:w-6 sm:h-6 text-[#F7DD0F]" />
+            </div>
             </div>
           </div>
             
@@ -463,7 +463,7 @@ export default function AdminPage() {
               onClick={() => setActiveTab("products")}
               className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl transition-all duration-200 font-medium whitespace-nowrap text-sm sm:text-base ${
                 activeTab === "products"
-                  ? "bg-blue-600 text-white shadow-lg"
+                  ? "bg-[#F7DD0F] text-black shadow-lg"
                   : "text-gray-300 hover:text-white hover:bg-white/10"
               }`}
             >
@@ -474,7 +474,7 @@ export default function AdminPage() {
               onClick={() => setActiveTab("orders")}
               className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl transition-all duration-200 font-medium whitespace-nowrap text-sm sm:text-base ${
                 activeTab === "orders"
-                  ? "bg-blue-600 text-white shadow-lg"
+                  ? "bg-[#F7DD0F] text-black shadow-lg"
                   : "text-gray-300 hover:text-white hover:bg-white/10"
               }`}
             >
@@ -485,7 +485,7 @@ export default function AdminPage() {
               onClick={() => setActiveTab("carousel")}
               className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl transition-all duration-200 font-medium whitespace-nowrap text-sm sm:text-base ${
                 activeTab === "carousel"
-                  ? "bg-blue-600 text-white shadow-lg"
+                  ? "bg-[#F7DD0F] text-black shadow-lg"
                   : "text-gray-300 hover:text-white hover:bg-white/10"
               }`}
             >
@@ -496,7 +496,7 @@ export default function AdminPage() {
               onClick={() => setActiveTab("assets")}
               className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl transition-all duration-200 font-medium whitespace-nowrap text-sm sm:text-base ${
                 activeTab === "assets"
-                  ? "bg-blue-600 text-white shadow-lg"
+                  ? "bg-[#F7DD0F] text-black shadow-lg"
                   : "text-gray-300 hover:text-white hover:bg-white/10"
               }`}
             >
@@ -507,7 +507,7 @@ export default function AdminPage() {
               onClick={() => setActiveTab("qr-codes")}
               className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl transition-all duration-200 font-medium whitespace-nowrap text-sm sm:text-base ${
                 activeTab === "qr-codes"
-                  ? "bg-blue-600 text-white shadow-lg"
+                  ? "bg-[#F7DD0F] text-black shadow-lg"
                   : "text-gray-300 hover:text-white hover:bg-white/10"
               }`}
             >
@@ -530,7 +530,7 @@ export default function AdminPage() {
                     placeholder="Search products..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#F7DD0F]"
                   />
                 </div>
                 <div className="flex items-center space-x-2">
@@ -538,7 +538,7 @@ export default function AdminPage() {
                   <select
                     value={filter}
                     onChange={(e) => setFilter(e.target.value)}
-                    className="px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#F7DD0F]"
                   >
                     <option value="all">All Products</option>
                     <option value="inStock">In Stock</option>
@@ -548,7 +548,7 @@ export default function AdminPage() {
                 </div>
                 <button
                   onClick={() => setShowAddModal(true)}
-                  className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 hover:scale-105"
+                  className="flex items-center space-x-2 px-4 py-2 bg-[#F7DD0F] hover:bg-[#F7DD0F]/90 text-black rounded-lg transition-all duration-200 hover:scale-105"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Add Product</span>

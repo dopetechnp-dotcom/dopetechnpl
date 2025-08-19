@@ -325,7 +325,7 @@ export default function ProductPageClient({ product, relatedProducts }: ProductP
         </div>
       </div>
 
-      {/* Enhanced Shopping Cart Sidebar */}
+      {/* Enhanced Shopping Cart Sidebar - Mobile Optimized */}
       {cartOpen && (
         <div className="fixed inset-0 z-50 flex">
           <div 
@@ -333,84 +333,94 @@ export default function ProductPageClient({ product, relatedProducts }: ProductP
             onClick={() => setCartOpen(false)}
           />
           
-          <div className="relative ml-auto w-full max-w-sm sm:max-w-md bg-gradient-to-br from-gray-900 to-black shadow-2xl rounded-l-3xl border-l border-yellow-500/20">
+          <div className="relative ml-auto w-full max-w-[85vw] sm:max-w-sm md:max-w-md bg-black shadow-2xl rounded-l-3xl border-l border-[#F7DD0F]/20">
             <div className="flex flex-col h-full">
-              {/* Enhanced Cart Header */}
-              <div className="flex items-center justify-between p-6 border-b border-yellow-500/20">
-                <h2 className="text-xl font-bold text-white">Shopping Cart</h2>
+              {/* Enhanced Cart Header - Mobile Optimized */}
+              <div className="flex items-center justify-between p-4 sm:p-6 border-b border-[#F7DD0F]/20">
+                <h2 className="text-lg sm:text-xl font-bold text-white">Shopping Cart</h2>
                 <button
                   onClick={() => setCartOpen(false)}
-                  className="p-3 hover:bg-yellow-500/10 rounded-full transition-colors"
+                  className="p-3 sm:p-3 hover:bg-[#F7DD0F]/10 rounded-full transition-colors touch-target"
+                  style={{ minHeight: '44px', minWidth: '44px' }}
                 >
-                  <X className="w-6 h-6 text-white" />
+                  <X className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </button>
               </div>
 
-              {/* Enhanced Cart Items */}
-              <div className="flex-1 overflow-y-auto p-6 scrollbar-hide">
+              {/* Enhanced Cart Items - Mobile Optimized */}
+              <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 scrollbar-hide">
                 {cart.length === 0 ? (
-                  <div className="text-center py-12">
-                    <ShoppingBag className="w-16 h-16 text-gray-500 mx-auto mb-4" />
-                    <p className="text-gray-400 text-lg">Your cart is empty</p>
-                    <p className="text-gray-500 text-sm mt-2">Add some products to get started</p>
+                  <div className="text-center py-8 sm:py-12">
+                    <ShoppingBag className="w-12 h-12 sm:w-16 sm:h-16 text-gray-500 mx-auto mb-3 sm:mb-4" />
+                    <p className="text-gray-400 text-base sm:text-lg">Your cart is empty</p>
+                    <p className="text-gray-500 text-xs sm:text-sm mt-2">Add some products to get started</p>
                   </div>
                 ) : (
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     {cart.map((item) => (
-                      <div key={item.id} className="bg-gradient-to-r from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-2xl p-4 space-y-4 border border-yellow-500/20">
-                        <div className="flex items-center space-x-4">
+                      <div key={item.id} className="bg-black border border-[#F7DD0F]/20 rounded-2xl p-3 sm:p-4 space-y-3 sm:space-y-4">
+                        <div className="flex items-start space-x-3 sm:space-x-4">
                           <img
                             src={item.image_url}
                             alt={item.name}
-                            className="w-16 h-16 object-cover rounded-xl flex-shrink-0"
+                            className="w-14 h-14 sm:w-16 sm:h-16 object-cover rounded-xl flex-shrink-0"
                           />
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-semibold text-sm line-clamp-2 leading-tight text-white">{item.name}</h3>
-                            <p className="text-yellow-400 font-bold text-base">Rs {item.price}</p>
+                            <h3 className="font-semibold text-sm sm:text-base line-clamp-2 leading-tight text-white mb-1">{item.name}</h3>
+                            <p className="text-[#F7DD0F] font-bold text-base sm:text-lg mb-2">Rs {item.price}</p>
+                            
+                            {/* Quantity Controls - Mobile Optimized */}
+                            <div className="flex items-center space-x-2 sm:space-x-3">
+                              <button
+                                onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                className="p-2 sm:p-2.5 hover:bg-[#F7DD0F]/20 rounded-lg transition-colors touch-target"
+                                style={{ minHeight: '40px', minWidth: '40px' }}
+                              >
+                                <Minus className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                              </button>
+                              <span className="w-8 sm:w-10 text-center font-bold text-white text-base sm:text-lg">{item.quantity}</span>
+                              <button
+                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                className="p-2 sm:p-2.5 hover:bg-[#F7DD0F]/20 rounded-lg transition-colors touch-target"
+                                style={{ minHeight: '40px', minWidth: '40px' }}
+                              >
+                                <Plus className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                              </button>
+                            </div>
                           </div>
-                          <div className="flex items-center space-x-2 flex-shrink-0">
-                            <button
-                              onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                              className="p-2 hover:bg-yellow-500/20 rounded-lg transition-colors"
-                            >
-                              <Minus className="w-4 h-4 text-white" />
-                            </button>
-                            <span className="w-8 text-center font-bold text-white">{item.quantity}</span>
-                            <button
-                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                              className="p-2 hover:bg-yellow-500/20 rounded-lg transition-colors"
-                            >
-                              <Plus className="w-4 h-4 text-white" />
-                            </button>
-                          </div>
-                          <div className="flex items-center space-x-1">
+                          
+                          {/* Action Buttons - Mobile Optimized */}
+                          <div className="flex flex-col space-y-2 flex-shrink-0">
                             <button
                               onClick={() => setEditingCartItem(item.id)}
-                              className="p-2 hover:bg-blue-500/20 rounded-lg text-blue-400 transition-colors"
+                              className="p-2 sm:p-2.5 hover:bg-[#F7DD0F]/20 rounded-lg text-[#F7DD0F] transition-colors touch-target"
+                              style={{ minHeight: '40px', minWidth: '40px' }}
                             >
-                              <Edit className="w-4 h-4" />
+                              <Edit className="w-4 h-4 sm:w-5 sm:h-5" />
                             </button>
                             <button
                               onClick={() => removeFromCart(item.id)}
-                              className="p-2 hover:bg-red-500/20 rounded-lg text-red-400 transition-colors"
+                              className="p-2 sm:p-2.5 hover:bg-red-500/20 rounded-lg text-red-400 transition-colors touch-target"
+                              style={{ minHeight: '40px', minWidth: '40px' }}
                             >
-                              <X className="w-4 h-4" />
+                              <X className="w-4 h-4 sm:w-5 sm:h-5" />
                             </button>
                           </div>
                         </div>
                         
+                        {/* Product Options - Mobile Optimized */}
                         {(item.selectedColor || (item.selectedFeatures && item.selectedFeatures.length > 0)) && (
-                          <div className="pl-20 space-y-2">
+                          <div className="pl-0 sm:pl-20 space-y-2">
                             {item.selectedColor && (
                               <div className="flex items-center space-x-2">
-                                <span className="text-xs text-gray-400">Color:</span>
-                                <span className="text-xs font-medium text-white">{item.selectedColor}</span>
+                                <span className="text-xs sm:text-sm text-gray-400">Color:</span>
+                                <span className="text-xs sm:text-sm font-medium text-white">{item.selectedColor}</span>
                               </div>
                             )}
                             {item.selectedFeatures && item.selectedFeatures.length > 0 && (
                               <div className="flex items-center space-x-2">
-                                <span className="text-xs text-gray-400">Features:</span>
-                                <span className="text-xs font-medium text-white">{item.selectedFeatures.join(', ')}</span>
+                                <span className="text-xs sm:text-sm text-gray-400">Features:</span>
+                                <span className="text-xs sm:text-sm font-medium text-white">{item.selectedFeatures.join(', ')}</span>
                               </div>
                             )}
                           </div>
@@ -421,12 +431,12 @@ export default function ProductPageClient({ product, relatedProducts }: ProductP
                 )}
               </div>
 
-              {/* Enhanced Cart Footer */}
+              {/* Enhanced Cart Footer - Mobile Optimized */}
               {cart.length > 0 && (
-                <div className="border-t border-yellow-500/20 p-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-lg font-semibold text-white">Total:</span>
-                    <span className="text-2xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent">
+                <div className="border-t border-[#F7DD0F]/20 p-4 sm:p-6">
+                  <div className="flex justify-between items-center mb-4 sm:mb-4">
+                    <span className="text-base sm:text-lg font-semibold text-white">Total:</span>
+                    <span className="text-lg sm:text-xl md:text-2xl font-bold text-[#F7DD0F]">
                       Rs {getCartTotal().toFixed(2)}
                     </span>
                   </div>
@@ -435,7 +445,8 @@ export default function ProductPageClient({ product, relatedProducts }: ProductP
                       setCartOpen(false)
                       setCheckoutModalOpen(true)
                     }}
-                    className="w-full bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-black py-4 px-6 rounded-xl font-bold hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+                    className="w-full bg-[#F7DD0F] hover:bg-[#F7DD0F]/90 text-black py-4 sm:py-4 px-4 sm:px-6 rounded-xl font-bold hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] text-base sm:text-base touch-target"
+                    style={{ minHeight: '48px' }}
                   >
                     Proceed to Checkout
                   </button>

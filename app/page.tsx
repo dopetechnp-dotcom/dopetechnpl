@@ -1355,117 +1355,131 @@ export default function DopeTechEcommerce() {
         </div>
       </section>
 
-      {/* Shopping Cart Sidebar - Mobile Optimized */}
+      {/* Enhanced Shopping Cart Sidebar - Mobile Optimized */}
       {cartOpen && (
         <div className="fixed inset-0 z-50 flex">
-          {/* Backdrop */}
           <div 
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setCartOpen(false)}
           />
           
-          {/* Cart Panel */}
-          <div className="relative ml-auto w-full max-w-xs sm:max-w-sm md:max-w-md bg-white dark:bg-[#1a1a1a] shadow-2xl rounded-l-2xl">
+          <div className="relative ml-auto w-full max-w-[85vw] sm:max-w-sm md:max-w-md bg-black shadow-2xl rounded-l-3xl border-l border-[#F7DD0F]/20">
             <div className="flex flex-col h-full">
-              {/* Cart Header */}
-              <div className="flex items-center justify-between p-3 sm:p-4 md:p-6 border-b border-gray-200 dark:border-gray-700">
-                <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-semibold">Shopping Cart</h2>
+              {/* Enhanced Cart Header - Mobile Optimized */}
+              <div className="flex items-center justify-between p-4 sm:p-6 border-b border-[#F7DD0F]/20">
+                <h2 className="text-lg sm:text-xl font-bold text-white">Shopping Cart</h2>
                 <button
                   onClick={() => setCartOpen(false)}
-                  className="p-1.5 sm:p-2 md:p-3 hover:bg-gray-100 dark:hover:bg-[#2a2a2a] rounded-full transition-colors touch-target"
+                  className="p-3 sm:p-3 hover:bg-[#F7DD0F]/10 rounded-full transition-colors touch-target"
                   style={{ minHeight: '44px', minWidth: '44px' }}
                 >
-                  <X className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
+                  <X className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </button>
               </div>
 
-              {/* Cart Items */}
-              <div className="flex-1 overflow-y-auto p-2 sm:p-3 md:p-4 lg:p-6 scrollbar-hide">
+              {/* Enhanced Cart Items - Mobile Optimized */}
+              <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 scrollbar-hide">
                 {cart.length === 0 ? (
-                  <div className="text-center py-6 sm:py-8 md:py-12">
-                    <ShoppingBag className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 text-gray-400 mx-auto mb-2 sm:mb-3 md:mb-4" />
-                    <p className="text-xs sm:text-sm md:text-base text-gray-400">Your cart is empty</p>
+                  <div className="text-center py-8 sm:py-12">
+                    <ShoppingBag className="w-12 h-12 sm:w-16 sm:h-16 text-gray-500 mx-auto mb-3 sm:mb-4" />
+                    <p className="text-gray-400 text-base sm:text-lg">Your cart is empty</p>
+                    <p className="text-gray-500 text-xs sm:text-sm mt-2">Add some products to get started</p>
                   </div>
                 ) : (
-                  <div className="space-y-2 sm:space-y-3 md:space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     {cart.map((item) => (
-                      <div key={item.id} className="flex items-center space-x-2 sm:space-x-3 md:space-x-4 p-2 sm:p-3 md:p-4 bg-gray-50 dark:bg-[#2a2a2a] rounded-lg">
-                        <img
-                          src={getPrimaryImageUrl(item)}
-                          alt={item.name}
-                          className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 object-cover rounded-lg flex-shrink-0"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.src = '/placeholder-product.svg';
-                          }}
-                        />
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-medium text-xs sm:text-sm md:text-base line-clamp-2 leading-tight">{item.name}</h3>
-                          <p className="text-[#F7DD0F] font-bold text-xs sm:text-sm md:text-base">Rs {item.price}</p>
-                          {/* Selected Options */}
-                          {(item.selectedColor || (item.selectedFeatures && item.selectedFeatures.length > 0)) && (
-                            <div className="mt-1 space-y-1">
-                              {item.selectedColor && (
-                                <p className="text-xs text-gray-500 dark:text-gray-400">Color: {item.selectedColor}</p>
-                              )}
-                              {item.selectedFeatures && item.selectedFeatures.length > 0 && (
-                                <p className="text-xs text-gray-500 dark:text-gray-400">Features: {item.selectedFeatures.join(', ')}</p>
-                              )}
+                      <div key={item.id} className="bg-black border border-[#F7DD0F]/20 rounded-2xl p-3 sm:p-4 space-y-3 sm:space-y-4">
+                        <div className="flex items-start space-x-3 sm:space-x-4">
+                          <img
+                            src={getPrimaryImageUrl(item)}
+                            alt={item.name}
+                            className="w-14 h-14 sm:w-16 sm:h-16 object-cover rounded-xl flex-shrink-0"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.src = '/placeholder-product.svg';
+                            }}
+                          />
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-sm sm:text-base line-clamp-2 leading-tight text-white mb-1">{item.name}</h3>
+                            <p className="text-[#F7DD0F] font-bold text-base sm:text-lg mb-2">Rs {item.price}</p>
+                            
+                            {/* Quantity Controls - Mobile Optimized */}
+                            <div className="flex items-center space-x-2 sm:space-x-3">
+                              <button
+                                onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                className="p-2 sm:p-2.5 hover:bg-[#F7DD0F]/20 rounded-lg transition-colors touch-target"
+                                style={{ minHeight: '40px', minWidth: '40px' }}
+                              >
+                                <Minus className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                              </button>
+                              <span className="w-8 sm:w-10 text-center font-bold text-white text-base sm:text-lg">{item.quantity}</span>
+                              <button
+                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                className="p-2 sm:p-2.5 hover:bg-[#F7DD0F]/20 rounded-lg transition-colors touch-target"
+                                style={{ minHeight: '40px', minWidth: '40px' }}
+                              >
+                                <Plus className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                              </button>
                             </div>
-                          )}
+                          </div>
+                          
+                          {/* Action Buttons - Mobile Optimized */}
+                          <div className="flex flex-col space-y-2 flex-shrink-0">
+                            <button
+                              onClick={() => setEditingCartItem(item.id)}
+                              className="p-2 sm:p-2.5 hover:bg-[#F7DD0F]/20 rounded-lg text-[#F7DD0F] transition-colors touch-target"
+                              style={{ minHeight: '40px', minWidth: '40px' }}
+                            >
+                              <Edit className="w-4 h-4 sm:w-5 sm:h-5" />
+                            </button>
+                            <button
+                              onClick={() => removeFromCart(item.id)}
+                              className="p-2 sm:p-2.5 hover:bg-red-500/20 rounded-lg text-red-400 transition-colors touch-target"
+                              style={{ minHeight: '40px', minWidth: '40px' }}
+                            >
+                              <X className="w-4 h-4 sm:w-5 sm:h-5" />
+                            </button>
+                          </div>
                         </div>
-                        <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
-                          <button
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                            className="p-1.5 sm:p-2 hover:bg-gray-200 dark:hover:bg-[#2a2a2a] rounded touch-target"
-                            style={{ minHeight: '44px', minWidth: '44px' }}
-                          >
-                            <Minus className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />
-                          </button>
-                          <span className="w-5 sm:w-6 md:w-8 text-center font-medium text-xs sm:text-sm md:text-base">{item.quantity}</span>
-                          <button
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            className="p-1.5 sm:p-2 hover:bg-gray-200 dark:hover:bg-[#2a2a2a] rounded touch-target"
-                            style={{ minHeight: '44px', minWidth: '44px' }}
-                          >
-                            <Plus className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />
-                          </button>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <button
-                            onClick={() => setEditingCartItem(item.id)}
-                            className="p-1.5 sm:p-2 hover:bg-blue-100 dark:hover:bg-blue-900/20 rounded text-blue-500 touch-target"
-                            style={{ minHeight: '44px', minWidth: '44px' }}
-                          >
-                            <Edit className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />
-                          </button>
-                          <button
-                            onClick={() => removeFromCart(item.id)}
-                            className="p-1.5 sm:p-2 hover:bg-red-100 dark:hover:bg-red-900/20 rounded text-red-500 touch-target"
-                            style={{ minHeight: '44px', minWidth: '44px' }}
-                          >
-                            <X className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />
-                          </button>
-                        </div>
+                        
+                        {/* Product Options - Mobile Optimized */}
+                        {(item.selectedColor || (item.selectedFeatures && item.selectedFeatures.length > 0)) && (
+                          <div className="pl-0 sm:pl-20 space-y-2">
+                            {item.selectedColor && (
+                              <div className="flex items-center space-x-2">
+                                <span className="text-xs sm:text-sm text-gray-400">Color:</span>
+                                <span className="text-xs sm:text-sm font-medium text-white">{item.selectedColor}</span>
+                              </div>
+                            )}
+                            {item.selectedFeatures && item.selectedFeatures.length > 0 && (
+                              <div className="flex items-center space-x-2">
+                                <span className="text-xs sm:text-sm text-gray-400">Features:</span>
+                                <span className="text-xs sm:text-sm font-medium text-white">{item.selectedFeatures.join(', ')}</span>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
                 )}
               </div>
 
-              {/* Cart Footer */}
+              {/* Enhanced Cart Footer - Mobile Optimized */}
               {cart.length > 0 && (
-                <div className="border-t border-gray-200 dark:border-gray-700 p-2 sm:p-3 md:p-4 lg:p-6">
-                  <div className="flex justify-between items-center mb-2 sm:mb-3 md:mb-4">
-                    <span className="text-sm sm:text-base md:text-lg font-semibold">Total:</span>
-                    <span className="text-lg sm:text-xl md:text-2xl font-bold text-[#F7DD0F]">Rs {getCartTotal().toFixed(2)}</span>
+                <div className="border-t border-[#F7DD0F]/20 p-4 sm:p-6">
+                  <div className="flex justify-between items-center mb-4 sm:mb-4">
+                    <span className="text-base sm:text-lg font-semibold text-white">Total:</span>
+                    <span className="text-lg sm:text-xl md:text-2xl font-bold text-[#F7DD0F]">
+                      Rs {getCartTotal().toFixed(2)}
+                    </span>
                   </div>
                   <button 
                     onClick={handleCheckout}
-                    className="w-full bg-[#F7DD0F] text-black py-2.5 sm:py-3 md:py-3.5 lg:py-4 px-3 sm:px-4 rounded-xl font-medium hover:bg-[#F7DD0F]/90 transition-colors touch-target"
-                    style={{ minHeight: '44px' }}
+                    className="w-full bg-[#F7DD0F] hover:bg-[#F7DD0F]/90 text-black py-4 sm:py-4 px-4 sm:px-6 rounded-xl font-bold hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] text-base sm:text-base touch-target"
+                    style={{ minHeight: '48px' }}
                   >
-                    Checkout
+                    Proceed to Checkout
                   </button>
                 </div>
               )}
